@@ -1,14 +1,8 @@
 import java.util.Scanner;
 
 public class Main {
-    public static int min(int a, int b, int c) {
-        int[] arr = {a, b, c};
-        int min = a;
-        for(int i = 1; i < arr.length; i++) {
-            if(min > arr[i])
-                min = arr[i];
-        }
-        return min;
+    public static int minValue(int a, int b, int c) {
+        return Math.min(a, Math.min(b, c));
     }
 
     public static void main(String[] args) {
@@ -17,7 +11,7 @@ public class Main {
         int b = sc.nextInt();
         int c = sc.nextInt();
         // Please write your code here.
-        int res = min(a, b, c);
+        int res = minValue(a, b, c);
         System.out.println(res);
     }
 }
