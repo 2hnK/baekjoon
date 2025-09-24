@@ -2,19 +2,12 @@ import java.util.Scanner;
 
 public class Main {
 
-    public static int counting(int a, int b) {
-        int cnt = 0;
-
-        for (int i = a; i <= b; i++) {
-            if(i==2) cnt += 2;
-            for (int j = 2; j < i; j++) {
-                if((i % j) == 0)
-                    break;
-                else if(j == i-1)
-                    cnt += i;
-            }
+    public static Boolean isPrime(int n) {
+        for (int i = 2; i < n; i++) {
+            if(n % i == 0)
+                return false;
         }
-        return cnt;
+        return true;
     }
 
     public static void main(String[] args) {
@@ -23,7 +16,11 @@ public class Main {
         int b = sc.nextInt();
         // Please write your code here.
 
-        int res = counting(a, b);
+        int res = 0;
+        for(int i = a; i <= b; i++) {
+            if(isPrime(i))
+                res += i;
+        }
         System.out.println(res);
     }
 }
