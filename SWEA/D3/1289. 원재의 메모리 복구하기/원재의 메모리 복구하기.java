@@ -12,26 +12,24 @@ public class Solution {
 
         for (int TC = 1; TC <= T; TC++) {
             sb.append("#" + TC + " ");
-            char[] memory = br.readLine().toCharArray();
+            String memory = br.readLine();
             int cnt = 0;
 
             // 시작값이 1이면 전환
-            if (memory[0] == '1') {
+            if (memory.charAt(0) == '1') {
                 cnt++;
             }
 
             // 이전값과 다르면 전환
-            for (int i = 1; i < memory.length; i++) {
-                if (memory[i - 1] == memory[i]) {
+            for (int i = 1; i < memory.length(); i++) {
+                if (memory.charAt(i) == memory.charAt(i - 1)) {
                     continue;
                 } else {
                     cnt++;
                 }
             }
-
             sb.append(cnt + "\n");
         }
-
         System.out.print(sb);
     }
 }
