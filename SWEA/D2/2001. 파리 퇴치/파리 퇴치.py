@@ -13,5 +13,5 @@ for tc in range(1, T+1):
         for y in range(M, N+1):
             cur_sum = sum_ai[x][y] - sum_ai[x-M][y] - sum_ai[x][y-M] + sum_ai[x-M][y-M]
             max_sum = max(max_sum, cur_sum)
-
+            
     print(f'#{tc} {max_sum}')
