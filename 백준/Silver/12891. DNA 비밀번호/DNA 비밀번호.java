@@ -3,6 +3,11 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
+
+    static int[] cond = new int[4]; // A C G T
+    static int[] cnt = new int[4];
+    static int res = 0;
+
     public static void main(String[] args) throws Exception {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -11,29 +16,55 @@ public class Main {
         int S = Integer.parseInt(st.nextToken()); // DNA 문자열 길이
         int P = Integer.parseInt(st.nextToken()); // 부분 문자열 길이
 
-        String s = br.readLine().replace('A', '0').replace('C', '1').replace('G', '2').replace('T', '3');
-        int[] cond = new int[4]; // A C G T
+        String s = br.readLine();
         st = new StringTokenizer(br.readLine());
+
+        // 조건 배열 초기화
         for (int i = 0; i < 4; i++) {
             cond[i] = Integer.parseInt(st.nextToken());
-        } // 조건 배열 초기화
+        }
 
-        int[] cnt = new int[4];
+        // 초기 윈도우 설정
         for (int i = 0; i < P; i++) {
-            cnt[s.charAt(i) - '0']++;
-        } // 시작 부분 문자열 조건 계산
+            increase(s.charAt(i));
+        }
 
-        int res = 0;
-        for (int i = 0; i < S - P + 1; i++) {
-            if (cnt[0] >= cond[0] && cnt[1] >= cond[1] && cnt[2] >= cond[2] && cnt[3] >= cond[3]) {
-                res++;
-            }
+        // 슬라이딩 윈도우
+        for (int i = 0; i <= S - P; i++) {
+            if (isValid()) res++;
+
             if (i < S - P) {
-                cnt[s.charAt(i) - '0']--;
-                cnt[s.charAt(P + i) - '0']++;
+                decrease(s.charAt(i));
+                increase(s.charAt(i + P));
             }
-        } // 슬라이딩 윈도우
+        }
 
         System.out.println(res);
+    }
+
+    private static void increase(char c) {
+        switch (c) {
+            case 'A': cnt[0]++; break;
+            case 'C': cnt[1]++; break;
+            case 'G': cnt[2]++; break;
+            case 'T': cnt[3]++; break;
+        }
+    }
+
+    private static void decrease(char c) {
+        switch (c) {
+            case 'A': cnt[0]--; break;
+            case 'C': cnt[1]--; break;
+            case 'G': cnt[2]--; break;
+            case 'T': cnt[3]--; break;
+        }
+    }
+
+    private static boolean isValid() {
+        for (int i = 0; i < 4; i++) {
+            if (cnt[i] < cond[i]) return false;
+        }
+        
+        return true;
     }
 }
