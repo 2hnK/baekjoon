@@ -2,8 +2,8 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -22,7 +22,7 @@ public class Main {
         L = Integer.parseInt(st.nextToken());
 
         st = new StringTokenizer(br.readLine());
-        Deque<Node> deque = new LinkedList<>();
+        Deque<Node> deque = new ArrayDeque<>();
 
         for (int i = 0; i < N; i++) {
             int now = Integer.parseInt(st.nextToken());
