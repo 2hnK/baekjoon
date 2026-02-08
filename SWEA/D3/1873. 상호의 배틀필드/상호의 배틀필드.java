@@ -3,7 +3,7 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 /* 상호의 배틀필드 */
-public class Solution {
+public class SWEA_1873 {
 
     static int H, W, N, r, c, dir;
     static char[][] map;
@@ -27,14 +27,17 @@ public class Solution {
             for (int i = 0; i < H; i++) {
                 String line = br.readLine();
 
+                // 맵 초기화
                 for (int j = 0; j < W; j++) {
                     map[i][j] = line.charAt(j);
 
+                    // 전차 초기 위치 설정
                     if ("^v<>".contains(map[i][j] + "")) {
                         r = i;
                         c = j;
                     }
 
+                    // 전차 초기 방향 설정
                     switch (map[i][j]) {
                         case '^':
                             dir = 0;
@@ -51,11 +54,13 @@ public class Solution {
                     }
                 }
             }
+
             Tank tank = new Tank(r, c, dir);
 
             N = Integer.parseInt(br.readLine());
             String commands = br.readLine();
 
+            // 명령어 입력 처리
             for (char c : commands.toCharArray()) {
                 if ("UDLR".contains(c + ""))
                     tank.move(c);
@@ -63,6 +68,7 @@ public class Solution {
                     tank.shoot();
             }
 
+            // 결과 출력
             sb.append("#").append(tc).append(" ");
             for (int i = 0; i < H; i++) {
                 sb.append(map[i]);
@@ -83,6 +89,7 @@ public class Solution {
             this.dir = dir;
         }
 
+        // 전차 이동
         public void move(char command) {
             int nr = 0, nc = 0;
             switch (command) {
@@ -108,31 +115,35 @@ public class Solution {
                     break;
             }
 
+            // 이동 가능 여부 확인
             if ((nr >= 0 && nr < H && nc >= 0 && nc < W)
                     && map[nr][nc] == '.') {
                 map[r][c] = '.';
                 r = nr;
                 c = nc;
             }
-            map[r][c] = shape[dir];
+
+            map[r][c] = shape[dir]; // 전차 방향 업데이트
         }
 
+        // 포탄 발사
         public void shoot() {
             int br = r, bc = c;
             while (true) {
                 br += dr[dir];
                 bc += dc[dir];
 
-                // 장외
+                // 맵 벗어남
                 if (br < 0 || br >= H || bc < 0 || bc >= W)
                     break;
 
-                // 벽돌
+                // 벽돌 벽
                 if (map[br][bc] == '*') {
                     map[br][bc] = '.';
                     break;
                 }
 
+                // 강철 벽
                 if (map[br][bc] == '#')
                     break;
             }
