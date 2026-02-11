@@ -13,14 +13,16 @@ public class Main {
         int N = Integer.parseInt(br.readLine());
         int x = ~N + 1;
         int y = x ^ N;
-        int cnt = 0;
+        
+        System.out.print(Integer.bitCount(y));
+        
+        // int cnt = 0;
+        // for (char c : Integer.toBinaryString(y).toCharArray()) {
+        //     if (c == '1')
+        //         cnt++;
+        // }
 
-        for (char c : Integer.toBinaryString(y).toCharArray()) {
-            if (c == '1')
-                cnt++;
-        }
-
-        System.out.print(cnt);
+        // System.out.print(cnt);
     }
 
 }
