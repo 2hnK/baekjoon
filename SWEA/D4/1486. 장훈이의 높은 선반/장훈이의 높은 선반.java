@@ -2,48 +2,50 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-class Solution {
-    static int T;
-    static int N;
-    static int B;
-    static int res;
-    static int[] heights;
+/* 장훈이의 높은 선반 */
+public class Solution {
 
-    public static void main(String args[]) throws Exception {
+    static int N, B, result;
+    static int[] clerks;
+
+    public static void main(String[] args) throws Exception {
+
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        T = Integer.parseInt(br.readLine());
+        StringBuilder sb = new StringBuilder();
+        StringTokenizer st;
 
-        for (int test_case = 1; test_case <= T; test_case++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            N = Integer.parseInt(st.nextToken());
-            B = Integer.parseInt(st.nextToken());
-            heights = new int[N];
+        int T = Integer.parseInt(br.readLine());
+
+        for (int tc = 1; tc <= T; tc++) {
 
             st = new StringTokenizer(br.readLine());
+            N = Integer.parseInt(st.nextToken()); // 점원 수
+            B = Integer.parseInt(st.nextToken()); // 선반 높이
+            result = Integer.MAX_VALUE;
+
+            clerks = new int[N];
+            st = new StringTokenizer(br.readLine());
             for (int i = 0; i < N; i++) {
-                heights[i] = Integer.parseInt(st.nextToken());
-            } // init array of staffs
+                clerks[i] = Integer.parseInt(st.nextToken());
+            }
 
-            res = Integer.MAX_VALUE;
-            backtrack(0, 0);
+            dfs(0, 0);
 
-            System.out.println("#" + test_case + " " + res);
+            sb.append("#").append(tc).append(" ").append(result - B).append("\n");
         } // end of tc
-    } // end of main
+        System.out.println(sb);
+    }
 
-    private static void backtrack(int cnt, int sum) {
-        if (sum - B >= res)
-            return;
-
+    private static void dfs(int index, int sum) {
         if (sum >= B) {
-            res = Math.min(res, sum - B);
+            result = Math.min(result, sum);
             return;
         }
 
-        if (cnt == N)
+        if (sum == B || index == N)
             return;
 
-        backtrack(cnt + 1, sum + heights[cnt]);
-        backtrack(cnt + 1, sum);
+        dfs(index + 1, sum + clerks[index]);
+        dfs(index + 1, sum);
     }
-} // end of class
+}
