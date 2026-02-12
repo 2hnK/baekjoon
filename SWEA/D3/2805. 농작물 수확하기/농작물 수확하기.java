@@ -1,34 +1,49 @@
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Solution {
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		int T = sc.nextInt();
 
-		for (int TestCase = 1; TestCase <= T; TestCase++) {
-			int N = sc.nextInt();
-			int[][] arr = new int[N][N];
+    static int N, res;
+    static int[][] map;
 
-			for (int i = 0; i < N; i++) {
-				String line = sc.next();
-				for (int j = 0; j < N; j++) {
-					arr[i][j] = line.charAt(j) - '0';
-				}
-			}
+    public static void main(String[] args) throws Exception {
 
-			int s, e;
-			int m = (N / 2);
-			int res = 0;
-			for (int i = 0; i < N; i++) {
-				int dist = m - Math.abs(m - i);
-				s = m - dist;
-				e = m + dist;
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
+        StringTokenizer st;
 
-				for (int j = s; j <= e; j++) {
-					res += arr[i][j];
-				}
-			}
-			System.out.printf("#%d %d\n", TestCase, res);
-		} // TestCase end
-	}
+        int T = Integer.parseInt(br.readLine());
+
+        for (int tc = 1; tc <= T; tc++) {
+
+            N = Integer.parseInt(br.readLine());
+            map = new int[N][N];
+            res = 0;
+
+            // 맵 초기화
+            for (int i = 0; i < N; i++) {
+                String line = br.readLine();
+                for (int j = 0; j < N; j++) {
+                    map[i][j] = line.charAt(j) - '0';
+                }
+            }
+
+            int s, e;
+            int c = (N / 2);
+            for (int i = 0; i < N; i++) {
+                int dist = c - Math.abs(c - i);
+                s = c - dist;
+                e = c + dist;
+
+                for (int j = s; j <= e; j++) {
+                    res += map[i][j];
+                }
+            }
+
+            sb.append("#").append(tc).append(" ").append(res).append("\n");
+        } // end of tc
+        System.out.println(sb);
+    }
+
 }
