@@ -32,7 +32,8 @@ public class Solution {
                 }
             }
 
-            select(0, 0);
+            visited[0] = true; // 첫 번째 재료는 A 음식에 고정
+            select(1, 1);
 
             sb.append("#").append(tc).append(" ").append(res).append("\n");
         } // end of tc
