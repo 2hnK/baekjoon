@@ -61,18 +61,17 @@ public class Main {
     }
 
     private static void bfs() {
-
         Queue<Integer> q = new ArrayDeque<>();
         q.offer(X); // 시작 위치
         dist[X] = 0; // 시작 거리 0
 
         while (!q.isEmpty()) {
-            int x = q.poll();
+            int curNode = q.poll();
 
-            for (int y : adjList[x]) {
-                if (dist[y] == -1) {
-                    q.offer(y);
-                    dist[y] = dist[x] + 1;
+            for (int nextNode : adjList[curNode]) {
+                if (dist[nextNode] == -1) {
+                    dist[nextNode] = dist[curNode] + 1;
+                    q.offer(nextNode);
                 }
             }
 
