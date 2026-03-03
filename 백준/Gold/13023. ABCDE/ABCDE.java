@@ -13,11 +13,13 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
         StringTokenizer st = new StringTokenizer(br.readLine());
 
         N = Integer.parseInt(st.nextToken()); // 사람 수
         M = Integer.parseInt(st.nextToken()); // 관계 수
+        visited = new boolean[N];
+        flag = false;
+        res = 0;
 
         adjList = new ArrayList<>();
         for (int i = 0; i < N; i++) {
@@ -32,10 +34,7 @@ public class Main {
             adjList.get(y).add(x);
         }
 
-        res = 0;
         for (int i = 0; i < N; i++) {
-            flag = false;
-            visited = new boolean[N];
             dfs(i, 1);
             if (flag) {
                 res = 1;
