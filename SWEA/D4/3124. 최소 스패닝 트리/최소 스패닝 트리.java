@@ -41,8 +41,7 @@ public class Solution {
             int count = 0;
             long res = 0;
             for (Edge e : edgeList) {
-                if (find(e.from) != find(e.to)) {
-                    union(e.from, e.to);
+                if (union(e.from, e.to)) {
                     res += e.weight;
                     count++;
 
@@ -62,28 +61,31 @@ public class Solution {
         return parents[x] = find(parents[x]);
     }
 
-    private static void union(int x, int y) {
+    private static boolean union(int x, int y) {
         x = find(x);
         y = find(y);
 
         if (x != y) {
             parents[y] = x;
+            return true;
+        }
+
+        return false;
+    }
+
+    static class Edge implements Comparable<Edge> {
+        int from, to, weight;
+
+        public Edge(int from, int to, int weight) {
+            this.from = from;
+            this.to = to;
+            this.weight = weight;
+        }
+
+        @Override
+        public int compareTo(Edge o) {
+            return Integer.compare(this.weight, o.weight);
         }
     }
 
-}
-
-class Edge implements Comparable<Edge> {
-    int from, to, weight;
-
-    public Edge(int from, int to, int weight) {
-        this.from = from;
-        this.to = to;
-        this.weight = weight;
-    }
-
-    @Override
-    public int compareTo(Edge o) {
-        return Integer.compare(this.weight, o.weight);
-    }
 }
