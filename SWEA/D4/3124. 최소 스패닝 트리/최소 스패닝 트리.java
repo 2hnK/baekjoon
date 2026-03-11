@@ -1,30 +1,32 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Solution {
 
-    static int[] parents;
+    static int V, E;
+    static boolean[] visited;
+    static ArrayList<ArrayList<Edge>> adjList;
 
     public static void main(String[] args) throws Exception {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder sb = new StringBuilder();
+        StringTokenizer st;
 
         int T = Integer.parseInt(br.readLine());
 
         for (int tc = 1; tc <= T; tc++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            int V = Integer.parseInt(st.nextToken());
-            int E = Integer.parseInt(st.nextToken());
-            List<Edge> edgeList = new ArrayList<>();
+            st = new StringTokenizer(br.readLine());
+            V = Integer.parseInt(st.nextToken());
+            E = Integer.parseInt(st.nextToken());
+            visited = new boolean[V + 1];
 
-            parents = new int[V + 1];
-            for (int i = 1; i <= V; i++) {
-                parents[i] = i;
+            adjList = new ArrayList<>();
+            for (int i = 0; i <= V; i++) {
+                adjList.add(new ArrayList<>());
             }
 
             for (int i = 0; i < E; i++) {
@@ -32,60 +34,55 @@ public class Solution {
                 int a = Integer.parseInt(st.nextToken());
                 int b = Integer.parseInt(st.nextToken());
                 int c = Integer.parseInt(st.nextToken());
-
-                edgeList.add(new Edge(a, b, c));
+                adjList.get(a).add(new Edge(b, c));
+                adjList.get(b).add(new Edge(a, c));
             }
 
-            Collections.sort(edgeList);
-
-            int count = 0;
-            long res = 0;
-            for (Edge e : edgeList) {
-                if (union(e.from, e.to)) {
-                    res += e.weight;
-                    count++;
-
-                    if (count == V - 1)
-                        break;
-                }
-            }
-
+            long res = prim(1);
             sb.append("#").append(tc).append(" ").append(res).append("\n");
         }
         System.out.println(sb);
-    } // End Of TestCase
-
-    private static int find(int x) {
-        if (parents[x] == x)
-            return x;
-        return parents[x] = find(parents[x]);
     }
 
-    private static boolean union(int x, int y) {
-        x = find(x);
-        y = find(y);
+    private static long prim(int start) {
+        PriorityQueue<Edge> pq = new PriorityQueue<>();
 
-        if (x != y) {
-            parents[y] = x;
-            return true;
+        pq.offer(new Edge(start, 0));
+
+        long totalWeight = 0;
+        int count = 0;
+        while (!pq.isEmpty()) {
+            Edge cur = pq.poll();
+
+            if (visited[cur.to])
+                continue;
+
+            visited[cur.to] = true;
+            totalWeight += cur.v;
+            count++;
+
+            if (count == V)
+                break;
+
+            for (Edge edge : adjList.get(cur.to)) {
+                if (!visited[edge.to]) {
+                    pq.offer(edge);
+                }
+            }
         }
-
-        return false;
+        return totalWeight;
     }
 
     static class Edge implements Comparable<Edge> {
-        int from, to, weight;
+        int to, v;
 
-        public Edge(int from, int to, int weight) {
-            this.from = from;
+        public Edge(int to, int v) {
             this.to = to;
-            this.weight = weight;
+            this.v = v;
         }
 
-        @Override
         public int compareTo(Edge o) {
-            return Integer.compare(this.weight, o.weight);
+            return Integer.compare(this.v, o.v);
         }
     }
-
 }
