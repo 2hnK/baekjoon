@@ -10,9 +10,9 @@ public class Main {
 	static int N, M, X, res;
 	static int[] dist;
 	static ArrayList<ArrayList<Edge>> adjList;
+	static ArrayList<ArrayList<Edge>> reverseList;
 
 	public static void main(String[] args) throws Exception {
-		// ------여기에 솔루션 코드를 작성하세요.------------
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 
@@ -22,8 +22,10 @@ public class Main {
 		res = 0;
 
 		adjList = new ArrayList<>();
+		reverseList = new ArrayList<>();
 		for (int i = 0; i <= N; i++) { // 노드번호: 1~1000
 			adjList.add(new ArrayList<>());
+			reverseList.add(new ArrayList<>());
 		}
 
 		for (int i = 0; i < M; i++) {
@@ -31,29 +33,31 @@ public class Main {
 			int from = Integer.parseInt(st.nextToken());
 			int to = Integer.parseInt(st.nextToken());
 			int time = Integer.parseInt(st.nextToken());
+
 			adjList.get(from).add(new Edge(to, time));
+			reverseList.get(to).add(new Edge(from, time));
 		}
 
-		dist = new int[N + 1];
+		int[] distToGo = dijkstra(X, reverseList);
+		int[] distToReturn = dijkstra(X, adjList);
+
+		int res = 0;
 		for (int i = 1; i <= N; i++) {
-			Arrays.fill(dist, Integer.MAX_VALUE);
-			dijkstra(i);
-			int t1 = dist[X];
-
-			Arrays.fill(dist, Integer.MAX_VALUE);
-			dijkstra(X);
-			int t2 = dist[i];
-
-			res = Math.max(res, t1 + t2);
+			if (distToGo[i] != Integer.MAX_VALUE && distToReturn[i] != Integer.MAX_VALUE) {
+				res = Math.max(res, distToGo[i] + distToReturn[i]);
+			}
 		}
 
 		System.out.println(res);
 	}
 
-	private static void dijkstra(int start) {
+	private static int[] dijkstra(int start, ArrayList<ArrayList<Edge>> list) {
 		PriorityQueue<Node> pq = new PriorityQueue<>();
-		pq.add(new Node(start, 0));
+		int[] dist = new int[N + 1];
+		Arrays.fill(dist, Integer.MAX_VALUE);
+
 		dist[start] = 0;
+		pq.add(new Node(start, 0));
 
 		while (!pq.isEmpty()) {
 			Node cur = pq.poll();
@@ -61,7 +65,7 @@ public class Main {
 			if (dist[cur.index] < cur.time)
 				continue;
 
-			for (Edge next : adjList.get(cur.index)) {
+			for (Edge next : list.get(cur.index)) {
 				int temp = cur.time + next.weight;
 				if (temp < dist[next.to]) {
 					dist[next.to] = temp;
@@ -69,6 +73,8 @@ public class Main {
 				}
 			}
 		}
+
+		return dist;
 	}
 
 	static class Node implements Comparable<Node> {
