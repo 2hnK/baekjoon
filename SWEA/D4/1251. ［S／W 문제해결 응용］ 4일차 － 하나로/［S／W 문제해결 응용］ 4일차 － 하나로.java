@@ -1,119 +1,90 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Solution {
 
-    static double E;
-    static int N;
-    static int[] parents;
-    static ArrayList<Node> nodeList;
-    static ArrayList<Edge> edgeList;
-
     public static void main(String[] args) throws Exception {
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringBuilder sb = new StringBuilder();
-
-        int T = Integer.parseInt(br.readLine());
+        int T = Integer.parseInt(br.readLine().trim());
 
         for (int tc = 1; tc <= T; tc++) {
+            int N = Integer.parseInt(br.readLine().trim()); // 섬의 개수
 
-            N = Integer.parseInt(br.readLine()); // 섬의 개수
-            nodeList = new ArrayList<>();
-            edgeList = new ArrayList<>();
+            long[] x = new long[N]; // 각 섬의 x좌표
+            long[] y = new long[N]; // 각 섬의 y좌표
 
-            parents = new int[N];
+            // x좌표 입력
+            StringTokenizer st = new StringTokenizer(br.readLine());
             for (int i = 0; i < N; i++) {
-                parents[i] = i;
+                x[i] = Long.parseLong(st.nextToken());
+            }
+            // y좌표 입력
+            st = new StringTokenizer(br.readLine());
+            for (int i = 0; i < N; i++) {
+                y[i] = Long.parseLong(st.nextToken());
             }
 
-            StringTokenizer st1 = new StringTokenizer(br.readLine());
-            StringTokenizer st2 = new StringTokenizer(br.readLine());
-            for (int i = 0; i < N; i++) {
-                int x = Integer.parseInt(st1.nextToken());
-                int y = Integer.parseInt(st2.nextToken());
-                nodeList.add(new Node(x, y, i));
-            }
-            E = Double.parseDouble(br.readLine()); // 세율
+            // 환경 부담 세율
+            double E = Double.parseDouble(br.readLine().trim());
 
-            for (int i = 0; i < N - 1; i++) {
-                for (int j = i + 1; j < N; j++) {
-                    edgeList.add(new Edge(i, j, calcDist(nodeList.get(i), nodeList.get(j))));
+            // 프림 알고리즘 수행
+            // visited[i]: i번 섬이 MST에 포함되었는지 여부
+            boolean[] visited = new boolean[N];
+            // minDist[i]: MST에 포함된 섬들과 i번 섬 사이의 최소 거리의 제곱
+            double[] minDist = new double[N];
+
+            // 초기화: 모든 거리를 무한대로 설정
+            for (int i = 0; i < N; i++) {
+                minDist[i] = Double.MAX_VALUE;
+            }
+
+            // 우선순위 큐: {비용(거리²), 섬 번호}
+            PriorityQueue<double[]> pq = new PriorityQueue<>((a, b) -> Double.compare(a[0], b[0]));
+
+            // 0번 섬에서 시작
+            minDist[0] = 0;
+            pq.offer(new double[] { 0, 0 });
+
+            double totalCost = 0; // 총 비용 (거리²의 합)
+            int count = 0; // MST에 포함된 섬의 수
+
+            while (!pq.isEmpty() && count < N) {
+                double[] cur = pq.poll();
+                double cost = cur[0];
+                int u = (int) cur[1];
+
+                // 이미 방문한 섬이면 스킵
+                if (visited[u])
+                    continue;
+
+                // MST에 포함
+                visited[u] = true;
+                totalCost += cost;
+                count++;
+
+                // u와 연결된 모든 미방문 섬에 대해 거리 갱신
+                for (int v = 0; v < N; v++) {
+                    if (visited[v])
+                        continue;
+
+                    // 두 섬 사이 거리의 제곱
+                    double dist = (double) (x[u] - x[v]) * (x[u] - x[v])
+                            + (double) (y[u] - y[v]) * (y[u] - y[v]);
+
+                    if (dist < minDist[v]) {
+                        minDist[v] = dist;
+                        pq.offer(new double[] { dist, v });
+                    }
                 }
             }
 
-            Collections.sort(edgeList);
-
-            double resDouble = 0;
-            int count = 0;
-            for (Edge e : edgeList) {
-                if (union(e.from, e.to)) {
-                    resDouble += E * Math.pow(e.dist, 2);
-                    count++;
-
-                    if (count == N - 1)
-                        break;
-                }
-            }
-
-            long res = Math.round(resDouble);
-            sb.append("#").append(tc).append(" ").append(res).append("\n");
+            // 총 비용에 세율을 곱한 후 반올림
+            long result = Math.round(totalCost * E);
+            sb.append('#').append(tc).append(' ').append(result).append('\n');
         }
-
-        System.out.println(sb);
-    } // End Of TestCase
-
-    private static int find(int x) {
-        if (parents[x] == x)
-            return x;
-        return parents[x] = find(parents[x]);
+        System.out.print(sb);
     }
-
-    private static boolean union(int x, int y) {
-        x = find(x);
-        y = find(y);
-
-        if (x != y) {
-            parents[y] = x;
-            return true;
-        }
-
-        return false;
-    }
-
-    private static double calcDist(Node n1, Node n2) {
-        long absX = Math.abs(n1.x - n2.x);
-        long absY = Math.abs(n1.y - n2.y);
-        return Math.sqrt(Math.pow(absX, 2) + Math.pow(absY, 2));
-    }
-
-    static class Node {
-        int x, y, idx;
-
-        public Node(int x, int y, int idx) {
-            this.x = x;
-            this.y = y;
-            this.idx = idx;
-        }
-    }
-
-    static class Edge implements Comparable<Edge> {
-        int from, to;
-        double dist;
-
-        public Edge(int from, int to, double dist) {
-            this.from = from;
-            this.to = to;
-            this.dist = dist;
-        }
-
-        @Override
-        public int compareTo(Edge o) {
-            return Double.compare(this.dist, o.dist);
-        }
-    }
-
 }
