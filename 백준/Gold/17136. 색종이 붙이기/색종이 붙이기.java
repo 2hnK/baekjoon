@@ -4,7 +4,7 @@ import java.util.StringTokenizer;
 
 public class Main {
 
-    static int N, res;
+    static int res;
     static int[] used;
     static int[][] map;
 
@@ -48,7 +48,7 @@ public class Main {
                 if (isPossible(r, c, s) && used[s] < 5) {
                     used[s]++;
                     painting(r, c, s, 0);
-                    search(r, c, count + 1);
+                    search(r, c + 1, count + 1);
                     painting(r, c, s, 1);
                     used[s]--;
                 }
@@ -68,18 +68,14 @@ public class Main {
     }
 
     static private boolean isPossible(int r, int c, int s) {
+        if (r + s > 10 || c + s > 10)
+            return false;
         for (int i = 0; i < s; i++) {
             for (int j = 0; j < s; j++) {
-                int nr = r + i;
-                int nc = c + j;
-                if (nr < 0 || nr >= 10 || nc < 0 || nc >= 10)
-                    return false;
-
-                if (map[nr][nc] == 0)
+                if (map[r + i][c + j] == 0)
                     return false;
             }
         }
-
         return true;
     }
 }
