@@ -29,59 +29,50 @@ public class Main {
                 if (to == -1)
                     break;
                 int weight = Integer.parseInt(st.nextToken());
-                adjList.get(from).add(new Edge(from, to, weight));
+                adjList.get(from).add(new Edge(to, weight));
             }
         }
 
-        int idx = bfs(new Edge(0, 1, 0))[0];
-        int res = bfs(new Edge(0, idx, 0))[1];
-        System.out.println(res);
+        int[] res1 = bfs(1);
+        int[] res2 = bfs(res1[0]);
+        System.out.println(res2[1]);
     }
 
-    private static int[] bfs(Edge s) {
-        ArrayDeque<Edge> dq = new ArrayDeque<>();
+    private static int[] bfs(int s) {
+        ArrayDeque<Integer> dq = new ArrayDeque<>();
         visited = new boolean[N + 1];
         dist = new int[N + 1];
 
         dq.offer(s);
-        visited[s.to] = true;
+        visited[s] = true;
 
         int max_dist = 0;
-        int max_idx = 0;
+        int max_idx = s;
         while (!dq.isEmpty()) {
-            Edge cur = dq.poll();
+            int cur = dq.poll();
 
-            for (Edge e : adjList.get(cur.to)) {
+            for (Edge e : adjList.get(cur)) {
                 if (!visited[e.to]) {
                     visited[e.to] = true;
-                    dist[e.to] = dist[e.from] + e.weight;
-                    dq.offer(e);
+                    dist[e.to] = dist[cur] + e.weight;
+                    dq.offer(e.to);
 
                     if (max_dist < dist[e.to]) {
                         max_dist = dist[e.to];
                         max_idx = e.to;
-                        // System.out.println(e);
-                        // System.out.println("max_dist: " + max_dist + ", max_idx: " + max_idx);
                     }
                 }
             }
         }
-        int[] res = { max_idx, max_dist };
-        return res;
+        return new int[] { max_idx, max_dist };
     }
 
     static class Edge {
-        int from, to, weight;
+        int to, weight;
 
-        public Edge(int from, int to, int weight) {
-            this.from = from;
+        public Edge(int to, int weight) {
             this.to = to;
             this.weight = weight;
-        }
-
-        @Override
-        public String toString() {
-            return "Edge [from=" + from + ", to=" + to + ", weight=" + weight + "]";
         }
     }
 }
