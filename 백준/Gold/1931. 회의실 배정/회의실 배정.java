@@ -2,7 +2,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.StringTokenizer;
-import java.util.TreeSet;
 
 public class Main {
 
@@ -28,8 +27,6 @@ public class Main {
 
         int N = Integer.parseInt(br.readLine());
 
-        TreeSet<Meeting> reserved = new TreeSet<>();
-
         Meeting[] meetings = new Meeting[N];
         for (int i = 0; i < N; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
@@ -39,17 +36,11 @@ public class Main {
         }
         Arrays.sort(meetings);
 
+        int lastEndTime = -1;
         int count = 0;
         for (Meeting m : meetings) {
-            if (reserved.isEmpty()) {
-                reserved.add(m);
-                count++;
-                continue;
-            }
-
-            Meeting last = reserved.last();
-            if (last.e <= m.s) {
-                reserved.add(m);
+            if (lastEndTime <= m.s) {
+                lastEndTime = m.e;
                 count++;
             }
         }
