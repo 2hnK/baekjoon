@@ -3,12 +3,10 @@ import java.util.*;
 public class Solution {
     public int[] solution(int []arr) {
          Deque<Integer> dq = new ArrayDeque<>();
-        int prev = -1;
         
         for(int a : arr) {
-            if(prev == a) continue;
-            dq.add(a);
-            prev = a;
+            if(!dq.isEmpty() && dq.peekLast() == a) continue;
+            dq.addLast(a);
         }
         
                 
